@@ -18,8 +18,8 @@ print(a)
 # Create socket
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Server IP address
-host_ip = '192.168.0.101'
-port = 9999
+host_ip = '192.168.0.111'
+port = 9992
 client_socket.connect((host_ip, port))
 
 data = b""
