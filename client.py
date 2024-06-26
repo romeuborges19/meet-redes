@@ -18,7 +18,7 @@ print(a)
 # Create socket
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Server IP address
-host_ip = '192.168.0.108'
+host_ip = '192.168.0.101'
 port = 9999
 client_socket.connect((host_ip, port))
 
@@ -46,7 +46,6 @@ while True:
     data = data[msg_size:]
 
     frame = pickle.loads(frame_data)
-    cv2.imshow("Receiving Video ", frame)
     key = cv2.waitKey(10)
     if key == 13:
         break
