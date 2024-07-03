@@ -60,20 +60,20 @@
 
         function displayRemoteVideo(clientId) {
             const remoteVideoContainer = document.getElementById('remoteVideos');
-            $('#remoteVideos').append(`<img src="http://192.168.179.7:5000/video_feed/${clientId}" width="640" height="480" />`);
-        }
-
-        socket.on('response', function(data) {
-            console.log(data.message);
-        });
-
-        function getNumber() {
+            let lista_clients = null;
+           
             socket.emit('number')
+            socket.on('count', function(data) {
+                lista_clients = data;
+            })
+
+            if (lista_clients != null) {
+                for (let i = 0; i < lista_clients.length; i++) {
+                    remoteVideoContainer.innerHTML += (`<img src="http://192.168.179.7:5000/video_feed/${i}" width="640" height="480" />`);
+        }
+    }
         }
 
-        socket.on('count', function(data) {
-            console.log(data.number)
-        })
     </script>
 </body>
 </html>
