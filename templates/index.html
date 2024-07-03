@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Stream</title>
+</head>
+<body>
+    <h1>Video Stream from Webcam</h1>
+    <form id="clientForm">
+        <label for="clientId">Client ID:</label>
+        <input type="text" id="clientId" name="clientId">
+        <button type="button" onclick="startStream()">Start Stream</button>
+    </form>
+    <div id="videosContainer"></div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script>
+        let i = 0;
+        function startStream() {
+            i = i + 1
+            const clientId = i;
+            $("#videosContainer").append(`<img id="video-${clientId}" src="/video_feed/${clientId}" width="640" height="480" />`);
+        }
+    </script>
+</body>
+</html>

@@ -36,6 +36,12 @@ def handle_client(client_socket, i):
         frame = pickle.loads(frame_data)
         frames_queue.put((i, frame))
 
+def handle_client_teste(client_socket, i):
+    while True:
+        frame = client_socket.recv(4*1024)
+        frames_queue.put((i, b'--frame\r\n'
+                             b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n'))
+
 def display_frames():
     windows = {}
     while True:
@@ -45,18 +51,14 @@ def display_frames():
             if window_name not in windows:
                 windows[window_name] = True  # Apenas para registrar a janela criada
             cv2.imshow(window_name, frame)
+            cv2.imwrite("bosta.png", frame)
         
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
     cv2.destroyAllWindows()
 
-os.system("clear")
-pyf = Figlet(font='puffy')
-a = pyf.renderText("Video Chat App with Multi-Threading")
-b = pyf.renderText("Server")
 os.system("tput setaf 3")
-print(a)
 
 # Socket Create
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
