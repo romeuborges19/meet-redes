@@ -15,8 +15,11 @@
         <button type="button" onclick="getNumber()">Get Number</button>
 
     </form>
-    <video id="localVideo" autoplay></video>
-    <div id="remoteVideos"></div>
+    <div style="display: 1;flex-direction: 'column'; gap: 5">
+        <div id="remoteVideos">
+            <video id="localVideo" autoplay></video>
+        </div>
+    </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
@@ -60,20 +63,23 @@
 
         function displayRemoteVideo(clientId) {
             const remoteVideoContainer = document.getElementById('remoteVideos');
-            let lista_clients = null;
+            var lista_clients = [];
            
             socket.emit('number')
-            socket.on('count', function(data) {
-                lista_clients = data;
+            socket.on('count', (data) => {
+                lista_clients = data.number;
+                console.log("lista clients: " + data.number)
+                console.log("lista clientsio iii: " + lista_clients.length)
+
+                for (let i = 0; i < lista_clients.length; i++) {
+                    console.log('sdsfsd' + i);
+                    if (lista_clients[i] != clientId) {
+                        $("#remoteVideos").append(`<img src="http://192.168.179.7:5000/video_feed/${lista_clients[i]}" width="640" height="480" />`)
+                    }
+                }
             })
 
-            if (lista_clients != null) {
-                lista_clients.forEach((client) => {
-                    remoteVideoContainer.innerHTML += (`<img src="http://19
-                    2.168.179.7:5000/video_feed/${client}" width="640" height="480" />`);
-                });
-        }
-    }
+            }
     </script>
     
 </body>

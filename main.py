@@ -19,7 +19,6 @@ def video_feed(client_id):
     global clients
     def generate():
         while True:
-            print('ioi')
             if clients[client_id].get('frames'):
                 frame = clients[client_id]['frames'].pop(0)
                 yield (b'--frame\r\n'
@@ -64,7 +63,7 @@ def handle_video(data):
 @socketio.on('number')
 def handle_number():
     global client
-    emit('count', {'number': clients.keys()})
+    emit('count', {'number': list(clients.keys())})
 
 
 if __name__ == '__main__':
