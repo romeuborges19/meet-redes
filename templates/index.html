@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Stream</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 </head>
 <body>
     <h1>Video Stream from Webcam</h1>
@@ -11,18 +12,67 @@
         <label for="clientId">Client ID:</label>
         <input type="text" id="clientId" name="clientId">
         <button type="button" onclick="startStream()">Start Stream</button>
+        <button type="button" onclick="getNumber()">Get Number</button>
+
     </form>
-    <div id="videosContainer"></div>
+    <video id="localVideo" autoplay></video>
+    <div id="remoteVideos"></div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <script>
-        let i = 0;
+        const socket = io("http://192.168.179.7:5000");
+
         function startStream() {
-            i = i + 1
-            const clientId = i;
-            $("#videosContainer").append(`<img id="video-${clientId}" src="/video_feed/${clientId}" width="640" height="480" />`);
+            const clientId = document.getElementById('clientId').value;
+            socket.emit('register', { client_id: clientId });
+            startVideo(clientId);
+            displayRemoteVideo(clientId);
         }
+
+         function startVideo(clientId) {
+            const video = document.getElementById('localVideo');
+            const constraints = {
+                video: true,
+                audio: false
+            };
+
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then(stream => {
+                    video.srcObject = stream;
+                    const mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.ondataavailable = function(e) {
+                        const reader = new FileReader();
+                        reader.onloadend = function() {
+                            const base64data = reader.result;
+                            socket.emit('video', { client_id: clientId, frame: base64data });
+                        };
+                        reader.readAsDataURL(e.data);
+                    };
+                    mediaRecorder.start(100); // Capture frame every 100ms
+                })
+                .catch(error => {
+                    console.error('Error accessing media devices.', error);
+                });
+        }
+
+        function displayRemoteVideo(clientId) {
+            const remoteVideoContainer = document.getElementById('remoteVideos');
+            $('#remoteVideos').append(`<img src="http://192.168.100.6:5000/video_feed/${clientId}" width="640" height="480" />`);
+        }
+
+        socket.on('response', function(data) {
+            console.log(data.message);
+        });
+
+        function getNumber() {
+            socket.emit('number')
+        }
+
+        socket.on('count', function(data) {
+            console.log(data.number)
+        })
     </script>
 </body>
 </html>
+
