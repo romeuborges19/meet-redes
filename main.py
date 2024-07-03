@@ -19,12 +19,14 @@ def video_feed(client_id):
     global clients
     def generate():
         while True:
+            print('ioi')
             if clients[client_id].get('frames'):
                 frame = clients[client_id]['frames'].pop(0)
                 yield (b'--frame\r\n'
                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            else:
+                time.sleep(0.1)
 
-            time.sleep(0.1)
     return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 

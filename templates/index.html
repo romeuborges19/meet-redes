@@ -40,16 +40,18 @@
             navigator.mediaDevices.getUserMedia(constraints)
                 .then(stream => {
                     video.srcObject = stream;
-                    const mediaRecorder = new MediaRecorder(stream);
-                    mediaRecorder.ondataavailable = function(e) {
-                        const reader = new FileReader();
-                        reader.onloadend = function() {
-                            const base64data = reader.result;
-                            socket.emit('video', { client_id: clientId, frame: base64data });
-                        };
-                        reader.readAsDataURL(e.data);
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+
+                    const captureFrame = () => {
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        const frame = canvas.toDataURL('image/jpeg');
+                        socket.emit('video', { client_id: clientId, frame: frame });
                     };
-                    mediaRecorder.start(100); // Capture frame every 100ms
+
+                    setInterval(captureFrame, 100); 
                 })
                 .catch(error => {
                     console.error('Error accessing media devices.', error);
@@ -58,7 +60,7 @@
 
         function displayRemoteVideo(clientId) {
             const remoteVideoContainer = document.getElementById('remoteVideos');
-            $('#remoteVideos').append(`<img src="http://192.168.100.6:5000/video_feed/${clientId}" width="640" height="480" />`);
+            $('#remoteVideos').append(`<img src="http://192.168.179.7:5000/video_feed/${clientId}" width="640" height="480" />`);
         }
 
         socket.on('response', function(data) {
