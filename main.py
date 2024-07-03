@@ -63,7 +63,7 @@ def handle_video(data):
 
 @socketio.on('number')
 def handle_number():
-    global clients
+    global client
     emit('count', {'number': clients.keys()})
 
 

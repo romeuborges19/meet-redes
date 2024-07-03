@@ -68,13 +68,14 @@
             })
 
             if (lista_clients != null) {
-                for (let i = 0; i < lista_clients.length; i++) {
-                    remoteVideoContainer.innerHTML += (`<img src="http://192.168.179.7:5000/video_feed/${i}" width="640" height="480" />`);
+                lista_clients.forEach((client) => {
+                    remoteVideoContainer.innerHTML += (`<img src="http://19
+                    2.168.179.7:5000/video_feed/${client}" width="640" height="480" />`);
+                });
         }
     }
-        }
-
     </script>
+    
 </body>
 </html>
 
